@@ -2,7 +2,12 @@ pipeline{
     stages{
         stage('git checkout'){
             steps{
-                
+                    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'GitCreds', url: 'https://github.com/Subhash-Rokkala/hotstar.git']])                
+            }
+        }
+        stage('build process'){
+            steps{
+            sh 'mvn clean install'
             }
         }
     }
