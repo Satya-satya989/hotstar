@@ -40,21 +40,24 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Kubernetes') {
-        steps {
-            withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-            sh '''
-            export KUBECONFIG=$KUBECONFIG
-
-            kubectl apply -f k8s/Deployment.yml
-            kubectl apply -f k8s/loadBalancerService.yml
-
-            kubectl get pods
-            kubectl get svc
-            '''
+         stage('Test K8s Connection') {
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    sh 'kubectl get nodes'
+                }
+            }
         }
-    }
-}
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    sh '''
+                    kubectl apply -f k8s/Deployment.yml
+                    kubectl apply -f k8s/loadBalancerService.yml
+                    '''
+                }
+            }
+        }
         
 
     }
