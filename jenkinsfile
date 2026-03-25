@@ -58,6 +58,7 @@ pipeline {
                 }
             }
         }
+  }
         post {
            success {
                  emailext to: 'mr.siddu1432@gmail.com',
@@ -71,5 +72,4 @@ pipeline {
           }
       }
 
-    }
 }
