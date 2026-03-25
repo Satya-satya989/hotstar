@@ -50,7 +50,7 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                withCredentials([file(credentialsId: 'ubeconfig', variable: 'KUBECONFIG')]) {
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
                     sh '''
                     kubectl apply -f k8s/Deployment.yml
                     kubectl apply -f k8s/loadBalancerService.yml
@@ -65,11 +65,16 @@ pipeline {
                      subject: "Pipeline SUCCESS",
                      body: "Build ${BUILD_NUMBER} succeeded"
            }
-          failure {
-                 emailext to: 'mr.siddu1432@gmail.com',
-                     subject: "Pipeline FAILED",
-                     body: "Build ${BUILD_NUMBER} failed"
-          }
-      }
+           failure {
+                emailext to: 'mr.siddu1432@gmail.com',
+                subject: "Pipeline FAILED",
+                body: """
+                Build ${BUILD_NUMBER} failed
+                Failed Stage: ${env.STAGE_NAME}
+
+                Check logs:
+                ${env.BUILD_URL}
+           """
+         }
 
 }
