@@ -76,5 +76,5 @@ pipeline {
                 ${env.BUILD_URL}
            """
          }
-
+      }
 }
