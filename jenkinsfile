@@ -11,7 +11,22 @@ pipeline {
 
         stage('Build Process') {
             steps {
-                sh 'mvn clean install'
+                sh 'mvn clean package'
+            }
+        }
+         stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv("${SONARQUBE_ENV}") {
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
         stage('deploying to nexus'){
